@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]  # Build requirements
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FAST-LoRa"
+version = "0.1"
+description = "FAST-LoRa - Fast Analytical Simulation Toolkit for LoRa Networks"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Fabian Margreiter", email = "fabian.margreiter@gmail.com" },
+]
+maintainers = [
+    { name = "Fabian Margreiter", email = "fabian.margreiter@gmail.com" },
+]
+keywords = ["FAST-LoRa", "LoRa", "LoRaWAN", "Simulation"]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+]
+
+[project.urls]
+homepage = "https://github.com/EmmArrGee/FAST-LoRa"
+repository = "https://github.com/EmmArrGee/FAST-LoRa"
