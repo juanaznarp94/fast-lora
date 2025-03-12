@@ -28,3 +28,11 @@ dependencies = [
 [project.urls]
 homepage = "https://github.com/EmmArrGee/FAST-LoRa"
 repository = "https://github.com/EmmArrGee/FAST-LoRa"
+
+[tool.setuptools]
+packages = ["fast_lora"]
+
+
+
+[tool.black]
+line-length = 88
