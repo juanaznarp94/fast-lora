@@ -143,6 +143,9 @@ class LoRaNetwork:
         or that were corrupted by a transmission from another end device are represented
         with a value of `-np.inf`.
         """
+        raise NotImplementedError(
+            "Use 'LoRaNetwork.calculate_snr(LoRaNetwork.rss_sampled)' instead."
+        )
 
     def calculate_snr(self, rss: np.ndarray) -> np.ndarray:
         """SNR of specific packet from end device (dim 0) arriving at gateway (dim 1) with considered flat fading and
@@ -282,7 +285,27 @@ class LoRaNetwork:
         device (dim 0) based on its distance to the closest gateway, not
         considering any packet interference.
         """
-        return np.vectorize(self._calculate_max_pdr)(np.min(self.distances, axis=1))
+        calculate_max_pdr = lambda x: (
+            0.5
+            + 0.5
+            * erf(
+                (
+                    (
+                        np.max(self.communication_config.allowed_transmission_powers)
+                        - self.log_distance_path_loss_config.reference_path_loss
+                        - 10
+                        * self.log_distance_path_loss_config.path_loss_exponent
+                        * np.log10(
+                            np.maximum(x, self._ALMOST_ZERO)
+                            / self.log_distance_path_loss_config.reference_distance
+                        )
+                    )
+                    - self.gateways.sensitivity[-1]
+                )
+                / (np.sqrt(2) * self.log_distance_path_loss_config.flat_fading)
+            )
+        )
+        return np.vectorize(calculate_max_pdr)(np.min(self.distances, axis=1))
 
     @property
     def ee(self) -> np.ndarray:

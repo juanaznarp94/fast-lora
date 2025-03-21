@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import Tuple
+from typing import Tuple, List
 from functools import cache
 
 
@@ -12,6 +12,8 @@ class CommunicationConfig:
         payload_size: int,
         packet_interval: float,
         coding_rate: int,
+        allowed_spreading_factors: List[int],
+        allowed_transmission_powers: List[int],
         low_data_rate: Tuple[int, int] | None = None,
     ):
         self._bandwidth = bandwidth
@@ -19,6 +21,8 @@ class CommunicationConfig:
         self._payload_size = payload_size
         self._packet_interval = packet_interval
         self._coding_rate = coding_rate
+        self._allowed_spreading_factors = allowed_spreading_factors
+        self._allowed_transmission_powers = allowed_transmission_powers
         self._low_data_rate = low_data_rate
 
     @property
@@ -40,6 +44,14 @@ class CommunicationConfig:
     @property
     def coding_rate(self) -> int:
         return self._coding_rate
+
+    @property
+    def allowed_spreading_factors(self) -> List[int]:
+        return self._allowed_spreading_factors
+
+    @property
+    def allowed_transmission_powers(self) -> List[int]:
+        return self._allowed_transmission_powers
 
     @property
     def low_data_rate(self) -> Tuple[int, int] | None:
