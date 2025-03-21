@@ -1,5 +1,6 @@
 setuptools==75.6.0
 wheel
+tqdm
 twine
 numpy==2.2.0
 scipy==1.14.1
