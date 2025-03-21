@@ -254,7 +254,7 @@ class LoRaNetwork:
                 # at gateway k (dim 2)
                 - (self.rss[:, np.newaxis, :] - self.rss[np.newaxis, :, :])
             )
-            / (2 * np.sqrt(2) * self.FLAT_FADING)
+            / (2 * np.sqrt(2) * self.log_distance_path_loss_config.flat_fading)
         )
 
         # combined probability for no end device j to transmit at the same time as end device i (dim 0) to
