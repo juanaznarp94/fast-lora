@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 from scipy.spatial.distance import cdist
 from scipy.special import erf
+from functools import cache, cached_property
 
 from functools import cached_property
 
@@ -78,7 +79,7 @@ class LoRaNetwork:
         """Distance between end devices (dim 0) and gateways (dim 1) in meters."""
         return cdist(self.end_devices.positions, self.gateways.positions)
 
-    @property
+    @cached_property
     def rss(self) -> np.ndarray:
         """Expected RSS  in dBm of packet from end device (dim 0) arriving at
         gateway (dim 1) without considering any randomness in path loss.
@@ -125,7 +126,7 @@ class LoRaNetwork:
         ] = -np.inf
         return rss_sampled
 
-    @property
+    @cached_property
     def snr(self) -> np.ndarray:
         """Expected SNR in dB of packet from end device (dim 0) arriving at
         gateway (dim 1) without considering any randomness in path loss.
@@ -154,7 +155,7 @@ class LoRaNetwork:
         end device are represented with a value of `-np.inf`."""
         return rss - self._thermal_noise
 
-    @property
+    @cached_property
     def _thermal_noise(self) -> float:
         """The intensity of the background thermal noise in dBm. Automatically calculated
         such that SNR of transmissions that just failed is as close as possible to the
@@ -162,7 +163,7 @@ class LoRaNetwork:
         """
         return np.mean(self.gateways.sensitivity - self._REQUIRED_SNR)
 
-    @property
+    @cached_property
     def prob_exceeds_gateway_sensitivity(self) -> np.ndarray:
         """Probability of a packet from end device (dim 0) arriving at gateway (dim 1) to exceed the gateway sensitivity."""
         return 0.5 + 0.5 * erf(
@@ -176,7 +177,7 @@ class LoRaNetwork:
             / (np.sqrt(2) * self.log_distance_path_loss_config.flat_fading)
         )
 
-    @property
+    @cached_property
     def transmission_time(self) -> np.ndarray:
         """Time for an end device (dim 0) to transmit a full packet."""
         preamble_time = (
@@ -215,14 +216,14 @@ class LoRaNetwork:
 
         return preamble_time + payload_time
 
-    @property
+    @cached_property
     def symbol_time(self) -> np.ndarray:
         """Time for an end device (dim 0) to transmit a single symbol."""
         return np.power(2, self.end_devices.spreading_factors) / (
             self._communication_config.bandwidth
         )
 
-    @property
+    @cached_property
     def prob_not_corrupted(self) -> np.ndarray:
         """Probability of a packet from end device (dim 0) arriving at
         gateway (dim 1) without being corrupted by a simultaneous
@@ -269,17 +270,17 @@ class LoRaNetwork:
             axis=1,
         )
 
-    @property
+    @cached_property
     def pdr_per_gateway(self) -> np.ndarray:
         """Packet delivery ratio from end device (dim 0) to gateway (dim 1)."""
         return self.prob_exceeds_gateway_sensitivity * self.prob_not_corrupted
 
-    @property
+    @cached_property
     def pdr(self) -> np.ndarray:
         """Packet delivery ratio from end device (dim 0) to any gateway."""
         return 1 - np.prod(1 - self.pdr_per_gateway, axis=1)
 
-    @property
+    @cached_property
     def pdr_max(self) -> np.ndarray:
         """Estimated maximum achievable packet delivery ratio of an end
         device (dim 0) based on its distance to the closest gateway, not
@@ -307,7 +308,7 @@ class LoRaNetwork:
         )
         return np.vectorize(calculate_max_pdr)(np.min(self.distances, axis=1))
 
-    @property
+    @cached_property
     def ee(self) -> np.ndarray:
         """Energy efficiency in bits/mJ of an end device (dim 0) as bits
         successfully transmitted per energy consumed.
