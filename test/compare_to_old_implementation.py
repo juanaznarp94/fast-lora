@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from itertools import product
 
-from old_implementation import LoraNetworkSimulation
+from .old_implementation import LoraNetworkSimulation
 
 
 # constant configuration - not influenced by number of end devices/gateways
@@ -46,7 +46,7 @@ def compare_single_network(num_end_devices: int, num_gateways: int, seed: int):
         np.arange(start=7, stop=12 + 1, step=1), size=(num_end_devices,)
     )
     transmission_powers = rng.choice(
-        np.arange(start=2, stop=16, step=2), size=(num_end_devices,)
+        np.arange(start=2, stop=16 + 1, step=2), size=(num_end_devices,)
     )
 
     # setup new simulation
