@@ -15,7 +15,7 @@ from .configs import (
 
 
 class LoRaNetwork:
-    _REQUIRED_SNR = np.array([-7.5, -10.0, -12.5, -15.0, -17.5, -20.0])
+    REQUIRED_SNR = np.array([-7.5, -10.0, -12.5, -15.0, -17.5, -20.0])
     """Required SNR at gateway for SF from 7 to 12 for successfull packet reception.
     Final decision is based purely on RSS and gateway sensitivity.
     """
@@ -161,7 +161,7 @@ class LoRaNetwork:
         such that SNR of transmissions that just failed is as close as possible to the
         above values. Reception decision is based purely on RSS and gateway sensitivy.
         """
-        return np.mean(self.gateways.sensitivity - self._REQUIRED_SNR)
+        return np.mean(self.gateways.sensitivity - self.REQUIRED_SNR)
 
     @cached_property
     def prob_exceeds_gateway_sensitivity(self) -> np.ndarray:
